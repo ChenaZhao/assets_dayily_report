@@ -3,41 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>宏观&大类资产日复盘</title>
+<title>每日研究日报</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; margin: 0; padding: 40px 20px; }
-  .container { max-width: 680px; margin: 0 auto; }
-  h1 { font-size: 22px; color: #1a1a1a; margin-bottom: 8px; }
-  .subtitle { color: #888; font-size: 14px; margin-bottom: 32px; }
-  .list { list-style: none; padding: 0; margin: 0; }
-  .list li { background: #fff; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-  .list li a { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; color: #1a1a1a; text-decoration: none; font-size: 15px; }
-  .list li a:hover { background: #f0f7ff; border-radius: 8px; }
-  .list li a .date { color: #666; font-size: 13px; }
-  .list li a .arrow { color: #999; font-size: 18px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; min-height: 100vh; padding: 40px 20px; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 4px; }
+  .meta { color: #999; font-size: 13px; margin-bottom: 32px; }
+
+  .section { background: #fff; border-radius: 12px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .section-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; cursor: pointer; user-select: none; }
+  .section-header:hover { background: #fafafa; }
+  .section-title { font-size: 16px; font-weight: 600; color: #1a1a1a; display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+  .tag-macro  { background: #e8f4fd; color: #1a6fa8; }
+  .tag-futures{ background: #fdf3e8; color: #a86a1a; }
+  .tag-equity { background: #edf8ee; color: #1a8a2a; }
+  .section-count { font-size: 13px; color: #aaa; }
+  .chevron { color: #bbb; font-size: 18px; transition: transform 0.2s; }
+  .section.open .chevron { transform: rotate(90deg); }
+
+  .report-list { border-top: 1px solid #f0f0f0; }
+  .report-list a { display: flex; justify-content: space-between; align-items: center; padding: 13px 22px; color: #333; text-decoration: none; font-size: 14px; border-bottom: 1px solid #f7f7f7; }
+  .report-list a:last-child { border-bottom: none; }
+  .report-list a:hover { background: #f5f9ff; }
+  .report-list a .date { color: #888; font-size: 13px; }
+  .report-list a .arrow { color: #ccc; }
+  .empty { padding: 24px 22px; color: #bbb; font-size: 13px; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>宏观 &amp; 大类资产日复盘</h1>
-  <p class="subtitle">点击查看各期报告</p>
-  <ul class="list" id="reportList"></ul>
+  <h1>每日研究日报</h1>
+  <p class="meta">内部使用 · 点击模块展开查看</p>
+
+  <!-- 宏观&大类资产 -->
+  <div class="section open" id="s-macro">
+    <div class="section-header" onclick="toggle('s-macro')">
+      <div class="section-title">
+        <span class="tag tag-macro">宏观</span>
+        宏观 &amp; 大类资产日报
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="section-count" id="c-macro"></span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="report-list" id="l-macro"></div>
+  </div>
+
+  <!-- 期货日报 -->
+  <div class="section" id="s-futures">
+    <div class="section-header" onclick="toggle('s-futures')">
+      <div class="section-title">
+        <span class="tag tag-futures">期货</span>
+        期货日报
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="section-count" id="c-futures"></span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="report-list" id="l-futures"></div>
+  </div>
+
+  <!-- 权益日报 -->
+  <div class="section" id="s-equity">
+    <div class="section-header" onclick="toggle('s-equity')">
+      <div class="section-title">
+        <span class="tag tag-equity">权益</span>
+        权益日报
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="section-count" id="c-equity"></span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+    <div class="report-list" id="l-equity"></div>
+  </div>
 </div>
+
 <script>
-const reports = [
+// FILE LIST — auto-updated by GitHub Actions on each push
+const files = [
   "资产日复盘_2026-06-22.html",
   "资产日复盘_2026-06-18.html",
   "资产日复盘_2026-06-17.html",
   "资产日复盘_2026-06-16.html",
 ];
 
-const list = document.getElementById("reportList");
-reports.forEach(name => {
-  const date = name.replace("资产日复盘_", "").replace(".html", "");
-  const li = document.createElement("li");
-  li.innerHTML = `<a href="${name}"><span>${date} 日复盘</span><span class="arrow">›</span></a>`;
-  list.appendChild(li);
-});
+function classify(name) {
+  if (name.startsWith("资产日复盘")) return "macro";
+  if (name.includes("futures"))      return "futures";
+  if (name.includes("equity"))       return "equity";
+  return "macro";
+}
+
+function dateFromName(name) {
+  const m = name.match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : name.replace(".html", "");
+}
+
+function labelFromName(name) {
+  return name.replace(".html", "");
+}
+
+const buckets = { macro: [], futures: [], equity: [] };
+files.forEach(f => buckets[classify(f)].push(f));
+
+function renderList(id, countId, items) {
+  const el = document.getElementById(id);
+  const ce = document.getElementById(countId);
+  ce.textContent = items.length ? items.length + " 篇" : "";
+  if (!items.length) {
+    el.innerHTML = '<div class="empty">暂无报告</div>';
+    return;
+  }
+  el.innerHTML = items.map(f =>
+    `<a href="${encodeURIComponent(f)}">
+      <span>${labelFromName(f)}</span>
+      <span class="arrow">›</span>
+    </a>`
+  ).join("");
+}
+
+renderList("l-macro",   "c-macro",   buckets.macro);
+renderList("l-futures", "c-futures", buckets.futures);
+renderList("l-equity",  "c-equity",  buckets.equity);
+
+function toggle(id) {
+  document.getElementById(id).classList.toggle("open");
+}
 </script>
 </body>
 </html>
