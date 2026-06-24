@@ -3,7 +3,9 @@ name: Update Index
 on:
   push:
     paths:
-      - 'reports/html/**.html'
+      - 'asset/macro/**.html'
+      - 'asset/futures/**.html'
+      - 'asset/equity/**.html'
 
 jobs:
   build:
@@ -13,35 +15,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate index.html
+      - name: Generate asset/index.html
         run: |
           python3 - <<'EOF'
 import os, re
 
-html_dir = "reports/html"
-files = sorted(
-    [f for f in os.listdir(html_dir) if f.endswith(".html") and f != "index.html"],
-    reverse=True
-)
+def list_files(subdir):
+    path = f"asset/{subdir}"
+    if not os.path.exists(path):
+        return []
+    files = sorted(
+        [f for f in os.listdir(path) if f.endswith(".html") and f != "index.html"],
+        reverse=True
+    )
+    return [f"{subdir}/{f}" for f in files]
 
-items = "\n".join(f'  "{f}",' for f in files)
-if items:
-    lines = items.rstrip().split("\n")
-    lines[-1] = lines[-1].rstrip(",")
-    items = "\n".join(lines)
+macro   = list_files("macro")
+futures = list_files("futures")
+equity  = list_files("equity")
 
-index_path = os.path.join(html_dir, "index.html")
+def to_js_list(name, items):
+    lines = ",\n".join(f'  "{f}"' for f in items)
+    return f"const {name} = [\n{lines}\n];"
+
+index_path = "asset/index.html"
 content = open(index_path, encoding="utf-8").read()
-new_list = f"const files = [\n{items}\n];"
-content = re.sub(r"const files = \[[\s\S]*?\];", new_list, content)
+content = re.sub(r"const macro = \[[\s\S]*?\];",   to_js_list("macro",   macro),   content)
+content = re.sub(r"const futures = \[[\s\S]*?\];", to_js_list("futures", futures), content)
+content = re.sub(r"const equity = \[[\s\S]*?\];",  to_js_list("equity",  equity),  content)
 open(index_path, "w", encoding="utf-8").write(content)
-print(f"Updated index with {len(files)} files")
+
+print(f"macro={len(macro)}, futures={len(futures)}, equity={len(equity)}")
 EOF
 
       - name: Commit
         run: |
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
-          git add reports/html/index.html
-          git diff --cached --quiet || git commit -m "auto: update index [skip ci]"
+          git add asset/index.html
+          git diff --cached --quiet || git commit -m "auto: update asset index [skip ci]"
           git push

@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日研究日报</title>
+<title>资产层日报</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; min-height: 100vh; padding: 40px 20px; }
   .container { max-width: 1100px; margin: 0 auto; }
-  h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 4px; }
-  .meta { color: #999; font-size: 13px; margin-bottom: 32px; }
+  .nav { font-size: 13px; color: #aaa; margin-bottom: 20px; }
+  .nav a { color: #aaa; text-decoration: none; } .nav a:hover { color: #666; }
+  h1 { font-size: 22px; color: #1a1a1a; margin-bottom: 4px; }
+  .meta { color: #999; font-size: 13px; margin-bottom: 28px; }
 
   .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: start; }
 
@@ -31,7 +33,8 @@
 </head>
 <body>
 <div class="container">
-  <h1>每日研究日报</h1>
+  <div class="nav"><a href="../">← 返回首页</a></div>
+  <h1>资产层日报</h1>
   <p class="meta">内部使用</p>
 
   <div class="grid">
@@ -43,7 +46,6 @@
       </div>
       <div class="report-list" id="l-macro"></div>
     </div>
-
     <div class="col">
       <div class="col-header">
         <div><span class="tag tag-futures">期货</span></div>
@@ -52,7 +54,6 @@
       </div>
       <div class="report-list" id="l-futures"></div>
     </div>
-
     <div class="col">
       <div class="col-header">
         <div><span class="tag tag-equity">权益</span></div>
@@ -65,51 +66,36 @@
 </div>
 
 <script>
-// FILE LIST — auto-updated by GitHub Actions on each push
-const files = [
-  "futures_daily_2026-06-24.html",
-  "equity_daily_report_2026-06-22.html",
-  "equity_daily_report_2026-06-23.html",
-  "futures_daily_2026-06-23.html",
-  "资产日复盘_2026-06-22.html",
-  "资产日复盘_2026-06-18.html",
-  "资产日复盘_2026-06-17.html",
-  "资产日复盘_2026-06-16.html",
+// FILE LISTS — auto-updated by GitHub Actions on each push
+const macro = [
+  "macro/资产日复盘_2026-06-23.html",
+  "macro/资产日复盘_2026-06-22.html",
+  "macro/资产日复盘_2026-06-18.html",
+  "macro/资产日复盘_2026-06-17.html",
+  "macro/资产日复盘_2026-06-16.html",
+];
+const futures = [
+  "futures/futures_daily_2026-06-24.html",
+  "futures/futures_daily_2026-06-23.html",
+];
+const equity = [
+  "equity/equity_daily_report_2026-06-23.html",
+  "equity/equity_daily_report_2026-06-22.html",
 ];
 
-function classify(name) {
-  if (name.startsWith("资产日复盘")) return "macro";
-  if (name.includes("futures"))      return "futures";
-  if (name.includes("equity"))       return "equity";
-  return "macro";
+function labelFromPath(p) {
+  return decodeURIComponent(p.split("/").pop().replace(".html", ""));
 }
-
-function labelFromName(name) {
-  const futuresMatch = name.match(/^futures_daily_(\d{4}-\d{2}-\d{2})\.html$/);
-  if (futuresMatch) return `${futuresMatch[1]} \u671f\u8d27\u65e5\u62a5`;
-  return name.replace(".html", "");
-}
-
-const buckets = { macro: [], futures: [], equity: [] };
-files.forEach(f => buckets[classify(f)].push(f));
-
 function renderList(listId, countId, items) {
-  const el = document.getElementById(listId);
-  const ce = document.getElementById(countId);
-  ce.textContent = items.length ? items.length + " 篇" : "";
-  if (!items.length) {
-    el.innerHTML = '<div class="empty">暂无报告</div>';
-    return;
-  }
-  el.innerHTML = items.map(f =>
-    `<a href="${encodeURIComponent(f)}"><span>${labelFromName(f)}</span><span class="arrow">›</span></a>`
-  ).join("");
+  document.getElementById(countId).textContent = items.length ? items.length + " 篇" : "";
+  document.getElementById(listId).innerHTML = items.length
+    ? items.map(f => `<a href="${f}"><span>${labelFromPath(f)}</span><span class="arrow">›</span></a>`).join("")
+    : '<div class="empty">暂无报告</div>';
 }
 
-renderList("l-macro",   "c-macro",   buckets.macro);
-renderList("l-futures", "c-futures", buckets.futures);
-renderList("l-equity",  "c-equity",  buckets.equity);
+renderList("l-macro",   "c-macro",   macro);
+renderList("l-futures", "c-futures", futures);
+renderList("l-equity",  "c-equity",  equity);
 </script>
-
 </body>
 </html>

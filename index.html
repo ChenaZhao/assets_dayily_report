@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内部研究平台</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+  h1 { font-size: 26px; color: #1a1a1a; margin-bottom: 6px; text-align: center; }
+  .meta { color: #999; font-size: 13px; margin-bottom: 48px; text-align: center; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 640px; }
+  .card { background: #fff; border-radius: 14px; padding: 28px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); text-decoration: none; color: inherit; transition: box-shadow 0.15s, transform 0.15s; }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); transform: translateY(-2px); }
+  .card .icon { font-size: 28px; margin-bottom: 12px; }
+  .card .title { font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .card .desc { font-size: 13px; color: #888; line-height: 1.5; }
+  .card.soon { opacity: 0.5; cursor: default; pointer-events: none; }
+  .badge { display: inline-block; font-size: 10px; background: #f0f0f0; color: #aaa; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+  <h1>内部研究平台</h1>
+  <p class="meta">内部使用</p>
+  <div class="grid">
+    <a class="card" href="asset/">
+      <div class="icon">📊</div>
+      <div class="title">资产层日报</div>
+      <div class="desc">宏观&大类资产 / 期货 / 权益<br>每日复盘与观点</div>
+    </a>
+    <div class="card soon">
+      <div class="icon">🔬</div>
+      <div class="title">策略层报告 <span class="badge">即将上线</span></div>
+      <div class="desc">量化策略 / 因子研究<br>回测报告</div>
+    </div>
+  </div>
+</body>
+</html>
