@@ -13,9 +13,8 @@ run_data.py
 CLAUDE.md
 工作流说明.md
 
-# reports 下只发布 html 成品，md 原稿与归档不上传
-/reports/*.md
-/reports/archive/
+# reports 仅本地: md 原稿/旧 html/归档都不上传(发布走 asset/macro)
+/reports/
 
-# 例外: reports/html/ 必须发布(下面显式取消忽略其内容)
-!/reports/html/
+# 公开发布目录: asset/macro(本宏观条线)。asset/equity、asset/futures 为别的系统, 本脚本不动。
+# 这些不在忽略列表中, 即正常跟踪发布。
