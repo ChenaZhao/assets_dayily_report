@@ -46,6 +46,8 @@
   .card.inactive { opacity: .5; }
   .card.inactive::before { opacity: .45; }
   .card.active:hover { transform: translateY(-2px); border-color: var(--blue-border); box-shadow: 0 6px 26px rgba(59,130,246,0.18); }
+  .green.active:hover { border-color: rgba(34,197,94,0.4); box-shadow: 0 6px 26px rgba(34,197,94,0.18); }
+  .green.active:hover .arrow { color: var(--green); }
 
   .icon { width: 52px; height: 52px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
   .blue .icon { background: var(--blue-dim); } .green .icon { background: var(--green-dim); } .purple .icon { background: var(--purple-dim); }
@@ -88,15 +90,15 @@
       <div class="end"><span class="status live">运行中</span><span class="arrow">→</span></div>
     </a>
 
-    <div class="card inactive green">
+    <a class="card active green" href="strategy/">
       <div class="icon">🔬</div>
       <div class="body">
         <div class="meta">Strategy Layer</div>
         <div class="title">策略层报告</div>
-        <div class="desc">量化策略研究 · 因子分析 · 回测报告 · 择时系统输出</div>
+        <div class="desc">A股择时策略 · 2.1.1 五维度择时看板 · 量化策略研究输出</div>
       </div>
-      <div class="end"><span class="status">即将上线</span><span class="badge">Coming Soon</span></div>
-    </div>
+      <div class="end"><span class="status live">运行中</span><span class="arrow">→</span></div>
+    </a>
 
     <div class="card inactive purple">
       <div class="icon">📁</div>
